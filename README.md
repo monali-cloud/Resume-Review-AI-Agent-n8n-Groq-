@@ -75,6 +75,8 @@ Response Body: JSON
 
 🧪 Testing the Agent
 
+## 🖼 Workflow Overview
+![Workflow](workflow.png)
 
 
 ## You can test the workflow using curl:
