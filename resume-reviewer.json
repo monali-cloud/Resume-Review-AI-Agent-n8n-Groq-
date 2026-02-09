@@ -1,0 +1,105 @@
+{
+  "name": "resume-reviewer",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "resume-review",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -288,
+        16
+      ],
+      "id": "4680f129-bc4e-4b98-8112-46b860ca4cc8",
+      "name": "Webhook",
+      "webhookId": "e8cca55c-65d0-433b-bce5-b80a9b5efdab"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer Your_Own_API_key"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama-3.1-8b-instant\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an HR expert who reviews resumes.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Review this resume for the job role {{$json.body.job_role}}:\\n\\n{{$json.body.resume}}\\n\\nGive feedback in simple words with:\\n1. Overall review\\n2. Strengths\\n3. Weaknesses\\n4. Improvements\\n5. Score out of 10\"\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -80,
+        16
+      ],
+      "id": "33965338-8683-45ed-9ee3-c84d259a0c5f",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        128,
+        16
+      ],
+      "id": "53262ccf-979b-4f10-b3bf-c3f71880b228",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "12b3fff3-107d-4c9c-971e-d3a9e2209753",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9288eeb4e0228666a2b9f7e778f56a078e5692dd25849ad68615df3f54c914d1"
+  },
+  "id": "2BThObW1R4lxlap9ZxG9V",
+  "tags": []
+}
